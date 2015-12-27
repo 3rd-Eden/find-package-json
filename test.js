@@ -23,8 +23,26 @@ describe('find-package-json', function () {
       , data = f.next();
 
     assume(data.value).is.a('object');
-    assume(data.value.__path).equals(path.join(__dirname, 'package.json'));
+    assume(data.filename).equals(path.join(__dirname, 'package.json'));
     assume(data.value.name).equals('find-package-json');
+  });
+
+  it('accepts a filename', function () {
+    var f = find(__filename)
+      , data = f.next();
+
+    assume(data.value).is.a('object');
+    assume(data.filename).equals(path.join(__dirname, 'package.json'));
+    assume(data.value.name).equals('find-package-json');
+  });
+
+  it('accepts a module object', function () {
+    var f = find(require('./fixture/module-test'))
+      , data = f.next();
+
+    assume(data.value).is.a('object');
+    assume(data.filename).equals(path.join(__dirname, 'fixture', 'package.json'));
+    assume(data.value.name).equals('fixture');
   });
 
   it('returns false when it cannot find more packages', function () {

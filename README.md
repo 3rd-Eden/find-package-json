@@ -25,8 +25,8 @@ var finder = require('find-package-json');
 ```
 
 The function accepts 1 optional argument which is the directory it should start
-searching in. If nothing is provided it will default to `process.cwd()` as entry
-point.
+searching in or a module object with a `filename` key. If nothing is provided
+it will default to `process.cwd()` as entry point.
 
 As we're build upon the iterator interface you can simply call the `.next()`
 function of the returned result to find the first package.json. If you don't
@@ -37,6 +37,16 @@ these methods do synchronous API calls in Node.js so they are blocking.
 var f = finder(__dirname);
 
 console.log(f.next().value); // the package.json object
+console.log(f.next().filename); // the path to the package.json file
+```
+
+You can also search for the global `module` object:
+
+```js
+var f = finder(module);
+
+console.log(f.next().value); // the package.json object
+console.log(f.next().filename); // the path to the package.json file
 ```
 
 If there is no more package.json's to be found, the method will set the returned
