@@ -26,23 +26,30 @@ function parse(data) {
 /**
  * Find package.json files.
  *
- * @param {String} root The root directory we should start searching in.
+ * @param {String|Object} root The root directory we should start searching in.
  * @returns {Object} Iterator interface.
  * @api public
  */
 module.exports = function find(root) {
   root = root || process.cwd();
-
+  if (typeof root !== "string") {
+    if (typeof root === "object" && typeof root.filename === 'string') {
+      root = root.filename;
+    } else {
+      throw new Error("Must pass a filename string or a module object to finder");
+    }
+  }
   return {
     /**
-     * Return the parsed package.json that we find a parent folder.
+     * Return the parsed package.json that we find in a parent folder.
      *
-     * @returns {Object} Value and indication if the iteration is done.
+     * @returns {Object} Value, filename and indication if the iteration is done.
      * @api public
      */
     next: function next() {
       if (root.match(/^(\w:\\|\/)$/)) return {
         value: undefined,
+        filename: undefined,
         done: true
       };
 
@@ -56,6 +63,7 @@ module.exports = function find(root) {
 
         return {
           value: data,
+          filename: file,
           done: false
         };
       }
