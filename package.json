@@ -31,9 +31,9 @@
   },
   "homepage": "https://github.com/3rd-Eden/find-package-json#readme",
   "devDependencies": {
-    "assume": "1.2.x",
-    "istanbul": "0.3.x",
-    "mocha": "2.2.x",
-    "pre-commit": "1.1.x"
+    "assume": "2.0.x",
+    "istanbul": "0.4.x",
+    "mocha": "5.1.x",
+    "pre-commit": "1.2.x"
   }
 }
