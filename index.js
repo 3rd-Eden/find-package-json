@@ -41,7 +41,7 @@ module.exports = function find(root) {
      * @api public
      */
     next: function next() {
-      if (root === path.sep) return {
+      if (root.match(/^(\w:\\|\/)$/)) return {
         value: undefined,
         done: true
       };
