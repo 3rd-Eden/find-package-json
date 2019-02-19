@@ -23,6 +23,22 @@ function parse(data) {
   catch (e) { return false; }
 }
 
+var iteratorSymbol = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol' ? Symbol.iterator : null;
+/**
+ * Add `Symbol.iterator` method if Symbols are available
+ *
+ * @param {Object} Iterator interface.
+ * @returns {Object} Iterator interface.
+ * @api private
+ */
+function addSymbolIterator(result) {
+  if (!iteratorSymbol) {
+    return result;
+  }
+  result[iteratorSymbol] = function () { return this; };
+  return result;
+}
+
 /**
  * Find package.json files.
  *
@@ -39,7 +55,7 @@ module.exports = function find(root) {
       throw new Error("Must pass a filename string or a module object to finder");
     }
   }
-  return {
+  return addSymbolIterator({
     /**
      * Return the parsed package.json that we find in a parent folder.
      *
@@ -47,11 +63,11 @@ module.exports = function find(root) {
      * @api public
      */
     next: function next() {
-      if (root.match(/^(\w:\\|\/)$/)) return {
+      if (root.match(/^(\w:\\|\/)$/)) return addSymbolIterator({
         value: undefined,
         filename: undefined,
         done: true
-      };
+      });
 
       var file = path.join(root, 'package.json')
         , data;
@@ -61,14 +77,14 @@ module.exports = function find(root) {
       if (fs.existsSync(file) && (data = parse(fs.readFileSync(file)))) {
         data.__path = file;
 
-        return {
+        return addSymbolIterator({
           value: data,
           filename: file,
           done: false
-        };
+        });
       }
 
       return next();
     }
-  };
+  });
 };
